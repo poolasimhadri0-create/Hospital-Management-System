@@ -1,7 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+import os
 
-DATABASE_URL = "mysql+pymysql://root:Simhadri%232005@127.0.0.1/hospital_db"
+# Use the environment variable 'DATABASE_URL' provided by Render, fallback to local for dev
+DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:Simhadri%232005@127.0.0.1/hospital_db")
 
 engine = create_engine(DATABASE_URL)
 

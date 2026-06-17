@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+import os
+import uvicorn
 from database import engine, Base, get_db
 import models  # Required so Base.metadata knows about the tables
 
@@ -101,3 +103,8 @@ app.include_router(
     prefix="/appointments",
     tags=["Appointments"]
 )
+
+if __name__ == "__main__":
+    # Render provides the port via the PORT environment variable
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
