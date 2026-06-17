@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+pymysql
+pydantic
+fastapi
+uvicorn
+sqlalchemy
+pymysql
+pydantic
+python-multipart
+python-dotenv
+python-multipart
+python-dotenv
