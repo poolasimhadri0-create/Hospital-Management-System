@@ -5,3 +5,4 @@ pymysql
 pydantic
 python-multipart
 python-dotenv
+gunicorn

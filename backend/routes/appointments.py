@@ -1,44 +1,35 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
 from database import get_db
-from models import Appointment
-from schemas import AppointmentSchema
+import models, schemas
 
 router = APIRouter()
 
+@router.post("/")
+def create_appointment(appointment: schemas.AppointmentSchema, db: Session = Depends(get_db)):
+    db_appointment = models.Appointment(**appointment.dict())
+    db.add(db_appointment)
+    db.commit()
+    db.refresh(db_appointment)
+    return db_appointment
 
 @router.get("/")
-def get_appointments(
-    db: Session = Depends(get_db)
-):
-    return db.query(Appointment).all()
+def get_appointments(db: Session = Depends(get_db)):
+    return db.query(models.Appointment).all()
 
+@router.get("/me/{username}")
+def get_my_appointments(username: str, db: Session = Depends(get_db)):
+    patient = db.query(models.Patient).filter(models.Patient.name == username).first()
+    if not patient:
+        return []
+    return db.query(models.Appointment).filter(models.Appointment.patient_id == patient.id).all()
 
-@router.post("/")
-def create_appointment(
-    appointment: AppointmentSchema,
-    db: Session = Depends(get_db)
-):
-    new_appointment = Appointment(
-        **appointment.model_dump()
-    )
-
-    db.add(new_appointment)
-    db.commit()
-
-    return {
-        "message": "Appointment Created"
-    }
-
-@router.delete("/{appointment_id}")
-def delete_appointment(appointment_id: int, role: str = "user", db: Session = Depends(get_db)):
-    if role != "admin":
-        raise HTTPException(status_code=403, detail="Access denied. Only admins can delete appointments.")
-    
-    appt = db.query(Appointment).filter(Appointment.id == appointment_id).first()
-    if not appt:
+@router.put("/{appointment_id}/accept")
+def accept_appointment(appointment_id: int, time: str, db: Session = Depends(get_db)):
+    appointment = db.query(models.Appointment).filter(models.Appointment.id == appointment_id).first()
+    if not appointment:
         raise HTTPException(status_code=404, detail="Appointment not found")
-    db.delete(appt)
+    appointment.status = "Accepted"
+    appointment.time = time
     db.commit()
-    return {"message": "Appointment cancelled"}
+    return {"message": "Appointment accepted"}
