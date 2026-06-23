@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from database import engine, Base, get_db
-from routes import appointments, patients, doctors, auth
-import models
+from backend.database import engine, Base, get_db
+from backend.routes import appointments, patients, doctors, auth
+from backend import models
 
 # Initialize database tables on startup
 Base.metadata.create_all(bind=engine)
