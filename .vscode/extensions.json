@@ -1,6 +1,8 @@
 {
     "recommendations": [
         "devboost.devboostextension",
-        "bugzi.forge-webbuilder"
+        "bugzi.forge-webbuilder",
+        "blackboxapp.blackboxagent",
+        "akash-cx.blackbox-debug"
     ]
 }
